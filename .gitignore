@@ -1,4 +1,6 @@
+
 .vscode
 .idea
 __pycache__
 dadata_cool.json
+*/__pycache__
