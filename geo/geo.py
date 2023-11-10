@@ -33,6 +33,9 @@ def postals_to_json(dadata: Dadata, ids):
             address['schedule_sun'] = data['schedule_sun']
             address['geo_lat'] = data['geo_lat']
             address['geo_lon'] = data['geo_lon']
+            
+            map_url = generate_url_by_coord(data['geo_lon'], data['geo_lat'])
+            address['map_url'] = map_url
             postal_addresses.append(address)
             count += 1
 
@@ -66,6 +69,8 @@ def addresses_to_json(response,
         if need_coord:
             address['geo_lat'] = data['geo_lat']
             address['geo_lon'] = data['geo_lon']
+        map_url = generate_url_by_coord(data['geo_lon'], data['geo_lat'])
+        address['map_url'] = map_url
         addresses.append(address)
         count += 1
 
@@ -79,6 +84,12 @@ def find_postal_ids(response):
         data = i['data']
         ids.add(data['postal_code'])
     return ids
+
+
+
+def generate_url_by_coord(lon, lat):
+    return f'https://yandex.ru/maps/?ll={lon},{lat}&z=21'
+
 
 
 def write_json(filename: str, data):
@@ -99,7 +110,7 @@ def main():
     response = dadata_get_addresses(dadata, lat, lon, radius, max_count)
     adresses = addresses_to_json(response)
     write_json('dadata_cool.json', adresses)
-    
+
     unique_postal_ids = find_postal_ids(response)
     postals = postals_to_json(dadata, unique_postal_ids)
     write_json('dadata_postals.json', postals)
