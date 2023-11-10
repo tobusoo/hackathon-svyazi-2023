@@ -1,6 +1,6 @@
-
 .vscode
 .idea
 __pycache__
 *.json
 */__pycache__
+session_name.session
