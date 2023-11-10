@@ -1,11 +1,12 @@
+from itertools import count
 from dadata import Dadata
 import json
 from config import *
 
 
-def dadata_response(geo_lat: float, geo_lon: float, radius: int):
+def dadata_response(geo_lat: float, geo_lon: float, radius: int, max_count: int):
     dadata = Dadata(DADATA_TOKEN)
-    result = dadata.geolocate(name="address", lat=geo_lat, lon=geo_lon, radius_meters=radius)
+    result = dadata.geolocate(name="address", lat=geo_lat, lon=geo_lon, radius_meters=radius, count=max_count)
     return result
 
 
@@ -39,12 +40,13 @@ def write_response_to_json(filename: str, result):
 
 def main():
     # lat = float(input('Enter lat:')) # 55.878
-    lat = 55.878
+    lat = 55.012895
     # lon = float(input('Enter lon:')) # 37.653
-    lon = 37.653
+    lon = 82.951024
     # radius = int(input('Enter radius:')) # 50
-    radius = 100
-    result = dadata_response(lat, lon, radius)
+    radius = 1000
+    max_count = 20
+    result = dadata_response(lat, lon, radius,max_count)
     write_response_to_json('dadata_cool.json', result)
 
 
