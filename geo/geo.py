@@ -1,6 +1,6 @@
 from dadata import Dadata
 import json
-from tg.config import *
+from config import *
 
 
 def dadata_response(geo_lat: float, geo_lon: float, radius: int):
