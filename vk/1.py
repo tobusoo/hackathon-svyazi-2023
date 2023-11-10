@@ -3,7 +3,7 @@ import json
 from config import *
 
 # https://oauth.vk.com/authorize? // запрос на получение access token
-# client_id=51789951
+# client_id=51789951               // Надо просто скопировать ссылку и вставить в браузер
 # &display=page
 # &redirect_url=https://oauth.vk.com/blank.html
 # &scope=offline,friends,wall,status,docs,groups
