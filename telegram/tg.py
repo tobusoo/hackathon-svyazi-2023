@@ -9,8 +9,11 @@ import getpass
 api_id = 20343413
 api_hash = '5ac3d169381320ca0befa82dd98400b1'
 
-# chat_name = 1001698136879 # it's chat
-chat_name = 'sndkgram' # it's channel
+chat_name = 1001698136879 # it's chat
+# chat_name = 'sndkgram' # it's channel
+user = 1166414189 # find user
+# user = 0 # all users
+
 qr = QRCode()
 
 
@@ -25,7 +28,7 @@ def display_url_as_qr(url: str):
     gen_qr(url)
 
 
-async def get_messages_by_channel_name(client: TelegramClient, name, limit: int, search: str = ''):
+async def get_messages_by_channel_name(client: TelegramClient, name, limit: int, search: str = '', find_by_user_id: int = 0):
     if not os.path.exists(str(name)):
         os.mkdir(str(name))
 
@@ -39,13 +42,21 @@ async def get_messages_by_channel_name(client: TelegramClient, name, limit: int,
         await client.download_profile_photo(-name, f'{name}/profile.png')
         is_chat = True
 
-    async for message in client.iter_messages(name, limit=limit, search=search):
+    async for message in client.iter_messages(name, search=search):
+        if count == limit:
+            break
         if not message.text:
             continue
         if len(message.text) == 0:
             continue
         
-        await client.download_media(message, f'{name}/{message.id}.png')
+        user_id = None
+        if message.from_id:
+            user_id = message.from_id.user_id
+        if find_by_user_id and user_id != find_by_user_id:
+            continue
+
+        # await client.download_media(message, f'{name}/{message.id}.png')
 
         reactions = []
         if message.reactions:
@@ -56,9 +67,6 @@ async def get_messages_by_channel_name(client: TelegramClient, name, limit: int,
         if not is_chat: 
             url = f'https://t.me/{name}/{message.id}'
 
-        user_id = None
-        if message.from_id:
-            user_id = message.from_id.user_id
 
         user_url = None
         if user_id:
@@ -120,7 +128,7 @@ async def main(client: TelegramClient):
     print('connected')
 
     try:
-        data = await get_messages_by_channel_name(client, chat_name, limit=10)
+        data = await get_messages_by_channel_name(client, chat_name, limit=10, find_by_user_id=user)
         write_json(f'{chat_name}/{chat_name}.json', data)
         print(f'Parsed: {chat_name}')
     except UsernameInvalidError as e:
