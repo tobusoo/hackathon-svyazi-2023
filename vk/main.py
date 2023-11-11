@@ -25,11 +25,16 @@ def getUsersInfo(session: vk_api.VkApi, userIds: str):
                                         movies,music,nickname,occupation,online,personal,photo_id,photo_max,photo_max_orig,quotes,\
                                         relation,relatives,timezone,tv,universities"})
 
+def getFullWall(session: vk_api.VkApi, owner_id: int):
+    tools = vk_api.VkTools(session)
+    wall = tools.get_all('wall.get', 100, {'owner_id': owner_id})
+    print('Posts count:', wall['count'])
+    return wall
+
 def getPostsInfo(session: vk_api.VkApi, id: int, offset: int, count: int): # Возвращает словарь с count постами начиная с поста offset
     return session.method("wall.get", {"owner_id": id, "offset": offset, "count": count})
 
-
-def getFriendsInfo(session: vk_api.VkApi, userId: int): # Возвращает словарь с количеством друзей, списком id друзей
+def getFriendsInfo(session: vk_api.VkApi, userId: int): # Возвращает словарь с количеством друзей и списком id друзей
     return session.method("friends.get", {"user_id": userId})
 
 def getUserStatus(session: vk_api.VkApi, userId: int):
@@ -129,9 +134,9 @@ def main():
     #     user = getUsersInfo(session, friend)
     #     print(f'{user[0]["first_name"]} {user[0]["last_name"]}')
 
-    info = getGroupStatus(session, "187227252")
-
-    print(info)
+    wall = getFullWall(session, -187227252)
+    writeJson(wall, 'trrrhachatrrrhahaa.json')
+    
 
 if __name__ == "__main__":
     main()
