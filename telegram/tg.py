@@ -1,14 +1,12 @@
 import json
 import os
+import getpass
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import UsernameInvalidError
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.channels import GetFullChannelRequest
 from qrcode.main import QRCode
-import getpass
-
-api_id = 20343413
-api_hash = '5ac3d169381320ca0befa82dd98400b1'
+from config import *
 
 # chat_name = 1001698136879 # it's chat
 chat_name = 'sndkgram' # it's channel
@@ -147,5 +145,5 @@ async def main(client: TelegramClient):
 
 
 if __name__ == '__main__':
-    client = TelegramClient('session_name', api_id, api_hash)
+    client = TelegramClient('session_name', API_ID, API_HASH)
     client.loop.run_until_complete(main(client))

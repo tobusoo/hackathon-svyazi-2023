@@ -4,3 +4,4 @@ __pycache__
 *.json
 */__pycache__
 session_name.session
+config.py
