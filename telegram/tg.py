@@ -1,6 +1,7 @@
 import json
 import os
 import getpass
+from time import sleep
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import UsernameInvalidError
 from telethon.errors import SessionPasswordNeededError
@@ -108,13 +109,10 @@ async def log_in_by_qr_code(client: TelegramClient):
             NotTntered = False
             while not NotTntered:
                 password = getpass.getpass(prompt='Please enter your password: ')
-                try:
-                    NotTntered = await client.sign_in(password=password)
-                    if (NotTntered):
-                        r = True
-                except:
-                    pass
-        except AttributeError:
+                NotTntered = await client.sign_in(password=password)
+                if (NotTntered):
+                    r = True
+        except AttributeError as e:
             r = True
             break
         except:
@@ -130,10 +128,20 @@ async def main(client: TelegramClient):
         await client.connect()
     await client.connect()
 
-    await log_in_by_phone(client)
+    # await log_in_by_phone(client)
     # await log_in_by_qr_code(client)
-    print('connected')
+    phone = '89998887766' # Your number
+    code = str(None)
+    await client.sign_in(phone)
+    try:
+        code = str(input('Enter code: '))
+        await client.sign_in(phone, code)
+    except SessionPasswordNeededError:
+        password = getpass.getpass('Enter your password: ')
+        await client.sign_in(phone, code=code, password=password)
 
+
+    print('connected')
     try:
         data = await get_messages_by_channel_name(client, chat_name, limit=10, find_by_user_id=user)
         write_json(f'{chat_name}/{chat_name}.json', data)
