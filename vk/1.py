@@ -56,29 +56,82 @@ def fromLinkToId(link: str):
     return link
     
 
+def auth_handler():
+    # """ При двухфакторной аутентификации вызывается эта функция.
+    # """
+
+    # Код двухфакторной аутентификации
+    key = input("Enter authentication code: ")
+    # Если: True - сохранить, False - не сохранять.
+    remember_device = False
+
+    return key, remember_device
+
+def captcha_handler(captcha):
+    #     При возникновении капчи вызывается эта функция и ей передается объект 
+    #     капчи. Через метод get_url можно получить ссылку на изображение.
+    #     Через метод try_again можно попытаться отправить запрос с кодом капчи 
+
+
+    key = input("Enter captcha code {0}: ".format(captcha.get_url())).strip()
+
+    # Пробуем снова отправить запрос с капчей
+    return captcha.try_again(key)
+
+
+def twoFactorAuth(session: vk_api.VkApi):
+    # """ Пример обработки двухфакторной аутентификации """ (Y)
+
+    try:
+        session.auth(token_only=True)
+    except vk_api.AuthError as error_msg:
+        print(error_msg)
+        return
+
 
 if __name__ == "__main__":
-    session = vk_api.VkApi(token=token)
 
-    info = getGroupInfo(session, "215278139")
-    writeJson(info, "215278139.json")
+    session = vk_api.VkApi(login=login,
+                           password=password,
+                           token=token,
+                           app_id=app_id,
+                           scope="offline,friends,wall,status,docs,groups",
+                           client_secret=service_key,
+                           auth_handler=auth_handler,
+                           captcha_handler=captcha_handler)
 
-    lst = "freshentree9,v.dmkrt,tobuso"
+    # responce = requests.get("https://oauth.vk.com/authorize",
+    #                         params={
+    #                             "client_id": app_id,
+    #                             "redirect_url": "https://oauth.vk.com/blank.html",
+    #                             "scope": "offline,friends,wall,status,docs,groups",
+    #                             "response_type": "code",
+    #                             "v": "5.21"
+    #                         })
+
+    # info = getGroupInfo(session, "215278139")
+    # writeJson(info, "215278139.json")
+
+    # lst = "freshentree9,v.dmkrt,tobuso"
     
-    info = getUsersInfo(session, lst)
-    writeJsonList(info, "users.json")
+    # info = getUsersInfo(session, lst)
+    # writeJsonList(info, "users.json")
 
-    link = "https://vk.com/sibguti_info"
+    # link = "https://vk.com/sibguti_info"
 
-    id = fromLinkToId(link)
+    # id = fromLinkToId(link)
 
-    info = getGroupInfo(session, id)
-    writeJson(info, id + ".json")
+    # info = getGroupInfo(session, id)
+    # writeJson(info, id + ".json")
 
-    info = getPostsInfo(session, -215278139, 0, 10)
-    writeJson(info, id + "_wall.json")
+    # info = getPostsInfo(session, -215278139, 0, 10)
+    # writeJson(info, id + "_wall.json")
 
-    info = getFriendsInfo(session, 212184201)  # Получаем id друзей в info
-    for friend in info["items"]:               # Вывод информации о каждом друге
-        user = getUsersInfo(session, friend)
-        print(f'{user[0]["first_name"]} {user[0]["last_name"]}')
+    # info = getFriendsInfo(session, 212184201)  # Получаем id друзей в info
+    # for friend in info["items"]:               # Вывод информации о каждом друге
+    #     user = getUsersInfo(session, friend)
+    #     print(f'{user[0]["first_name"]} {user[0]["last_name"]}')
+
+    info = session.method("status.get", {"user_id": "546543569"})
+
+    print(info)
