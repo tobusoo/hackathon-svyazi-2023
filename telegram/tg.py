@@ -2,6 +2,7 @@ import json
 import os
 import getpass
 from time import sleep
+from flask import cli
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import UsernameInvalidError
 from telethon.errors import SessionPasswordNeededError
@@ -119,10 +120,6 @@ async def log_in_by_qr_code(client: TelegramClient):
             await qr_login.recreate()
 
 
-async def log_in_by_phone(client: TelegramClient):
-    await client.start() # type: ignore
-
-
 async def main(client: TelegramClient):
     if (not client.is_connected()):
         await client.connect()
@@ -130,7 +127,7 @@ async def main(client: TelegramClient):
 
     # await log_in_by_phone(client)
     # await log_in_by_qr_code(client)
-    phone = '89137659282' # Your number
+    phone = str(input('Enter your phone number: ')) # Your number
     code = str(None)
     await client.sign_in(phone)
     try:
