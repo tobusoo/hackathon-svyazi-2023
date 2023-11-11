@@ -130,7 +130,7 @@ async def main(client: TelegramClient):
 
     # await log_in_by_phone(client)
     # await log_in_by_qr_code(client)
-    phone = '89998887766' # Your number
+    phone = '89137659282' # Your number
     code = str(None)
     await client.sign_in(phone)
     try:
@@ -138,7 +138,7 @@ async def main(client: TelegramClient):
         await client.sign_in(phone, code)
     except SessionPasswordNeededError:
         password = getpass.getpass('Enter your password: ')
-        await client.sign_in(phone, code=code, password=password)
+        await client.sign_in(phone, password=password)
 
 
     print('connected')
