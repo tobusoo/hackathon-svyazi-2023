@@ -96,20 +96,19 @@ def write_json(filename: str, data):
     with open(filename, 'w', encoding='utf-8') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
+
 def lat_check(lat):
     try:
         lat = float(lat)
     except ValueError:
         print('This is not a number!')
         return False
+    if 77 >= lat >= 41:
+        return True
     else:
-        if 77 >= lat >= 41:
-            return True
-        else:
-            print("Incorrect latitude!")
-            return False
-    finally:
-        None
+        print("Incorrect latitude!")
+        return False
+
 
 def lon_check(lon):
     try:
@@ -117,16 +116,15 @@ def lon_check(lon):
     except ValueError:
         print('This is not a number!')
         return False
+
+    if type(lon) != float:
+        return False
+    if 169 >= lon >= 19:
+        return True
     else:
-        if type(lon) != float:
-            return False
-        if 169 >= lon >= 19:
-            return True
-        else:
-            print("Incorrect longitude!")
-            return False
-    finally:
-        None
+        print("Incorrect longitude!")
+        return False
+
         
 def rad_check(rad):
     try:
@@ -134,30 +132,29 @@ def rad_check(rad):
     except ValueError:
         print('This is not a number!')
         return False
+
+    if type(rad) != int:
+        return False
+    if rad >= 0:
+        return True
     else:
-        if type(rad) != int:
-            return False
-        if rad >= 0:
-            return True
-        else:
-            print("Incorrect radius!")
-            return False
-    finally:
-        None        
+        print("Incorrect radius!")
+        return False
+    
 
 def main():
-    lat = input('Enter lat:')
-    if lat_check(lat) == False:
-        return
-    # lat = 55.601983
-    lon = input('Enter lon:')
-    if lon_check(lon) == False:
-        return
-    # lon = 37.359486
-    radius = input('Enter radius:')
-    if rad_check(radius) == False:
-        return
-    # radius = 50
+    # lat = float(input('Enter lat:'))
+    # if lat_check(lat) == False:
+    #     return
+    lat = 55.601983
+    # lon = float(input('Enter lon:'))
+    # if lon_check(lon) == False:
+    #     return
+    lon = 37.359486
+    # radius = int(input('Enter radius:'))
+    # if rad_check(radius) == False:
+    #     return
+    radius = 1000
     max_count = 20
     dadata = Dadata(DADATA_TOKEN)
 
