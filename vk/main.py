@@ -72,7 +72,7 @@ def fromLinkToIdGroup(session: vk_api.VkApi, link: str):
 
     print(groupId)
 
-    return groupId
+    return int(groupId)
     
 def fromLinkToIdUser(session: vk_api.VkApi, link: str):
 
@@ -85,7 +85,7 @@ def fromLinkToIdUser(session: vk_api.VkApi, link: str):
 
     print(userId)
 
-    return userId
+    return int(userId)
 
 def auth_handler():
     # """ При двухфакторной аутентификации вызывается эта функция.
@@ -139,7 +139,7 @@ def main():
     # info = getUsersInfo(session, lst)
     # writeJsonList(info, "users.json")
 
-    link = "https://vk.com/sibguti_info"
+    link = "https://vk.com/hakatonurtisi"
 
     # id = fromLinkToIdGroup(link)
 
@@ -157,7 +157,12 @@ def main():
     # wall = getFullWall(session, -187227252)
     # writeJson(wall, 'trrrhachatrrrhahaa.json')
 
-    id = fromLinkToIdUser(session, 'https://vk.com/id546543569')
+    if (isLink(link)):
+        link = fromLinkToIdGroup(session, link)
+
+    wall = getFullWall(session, -215278139)
+    
+    writeJson(wall, 'trrrhachatrrrhahaa.json')
     
 
 if __name__ == "__main__":
