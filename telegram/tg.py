@@ -3,6 +3,7 @@ import os
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import UsernameInvalidError
 from telethon.errors import SessionPasswordNeededError
+from telethon.tl.functions.channels import GetFullChannelRequest
 from qrcode.main import QRCode
 import getpass
 
@@ -34,13 +35,20 @@ async def get_messages_by_channel_name(client: TelegramClient, name, limit: int,
 
     messages_data = []
     count = 0
+    channel_count = 0
+    channel_about = None
 
     is_chat = None
     try:
         await client.download_profile_photo(name, f'{name}/profile.png')
+        ch = await client.get_entity(name)
+        ch_full = await client(GetFullChannelRequest(channel=ch))
+        channel_about = ch_full.full_chat.about 
+        channel_count = ch_full.full_chat.participants_count
     except ValueError:
         await client.download_profile_photo(-name, f'{name}/profile.png')
         is_chat = True
+
 
     async for message in client.iter_messages(name, search=search):
         if count == limit:
@@ -80,7 +88,8 @@ async def get_messages_by_channel_name(client: TelegramClient, name, limit: int,
         messages_data.append(data)
         count += 1
     
-    json_data = {'count':count, 'messages' : messages_data}
+    json_data = {'subscribers': channel_count, 'about': channel_about,
+                'messages_count':count, 'messages' : messages_data}
     return json_data
 
 
