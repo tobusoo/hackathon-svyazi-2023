@@ -32,6 +32,12 @@ def getPostsInfo(session: vk_api.VkApi, id: int, offset: int, count: int): # В�
 def getFriendsInfo(session: vk_api.VkApi, userId: int): # Возвращает словарь с количеством друзей, списком id друзей
     return session.method("friends.get", {"user_id": userId})
 
+def getUserStatus(session: vk_api.VkApi, userId: int):
+    return session.method("status.get", {"user_id": userId})
+
+def getGroupStatus(session: vk_api.VkApi, groupId: int):
+    return session.method("status.get", {"group_id": groupId})
+
 
 def writeJsonList(info, filename: str):
     with open(filename, 'w', encoding='utf8') as file:
@@ -89,8 +95,7 @@ def twoFactorAuth(session: vk_api.VkApi):
         return
 
 
-if __name__ == "__main__":
-
+def main():
     session = vk_api.VkApi(login=login,
                            password=password,
                            token=token,
@@ -100,14 +105,6 @@ if __name__ == "__main__":
                            auth_handler=auth_handler,
                            captcha_handler=captcha_handler)
 
-    # responce = requests.get("https://oauth.vk.com/authorize",
-    #                         params={
-    #                             "client_id": app_id,
-    #                             "redirect_url": "https://oauth.vk.com/blank.html",
-    #                             "scope": "offline,friends,wall,status,docs,groups",
-    #                             "response_type": "code",
-    #                             "v": "5.21"
-    #                         })
 
     # info = getGroupInfo(session, "215278139")
     # writeJson(info, "215278139.json")
@@ -132,6 +129,9 @@ if __name__ == "__main__":
     #     user = getUsersInfo(session, friend)
     #     print(f'{user[0]["first_name"]} {user[0]["last_name"]}')
 
-    info = session.method("status.get", {"user_id": "546543569"})
+    info = getGroupStatus(session, "187227252")
 
     print(info)
+
+if __name__ == "__main__":
+    main()
