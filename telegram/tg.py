@@ -9,10 +9,10 @@ import getpass
 api_id = 20343413
 api_hash = '5ac3d169381320ca0befa82dd98400b1'
 
-chat_name = 1001698136879 # it's chat
-# chat_name = 'sndkgram' # it's channel
-user = 1166414189 # find user
-# user = 0 # all users
+# chat_name = 1001698136879 # it's chat
+chat_name = 'sndkgram' # it's channel
+# user = 1166414189 # find user
+user = 0 # all users
 
 qr = QRCode()
 
@@ -123,8 +123,8 @@ async def main(client: TelegramClient):
         await client.connect()
     await client.connect()
 
-
     await log_in_by_phone(client)
+    # await log_in_by_qr_code(client)
     print('connected')
 
     try:
@@ -133,6 +133,8 @@ async def main(client: TelegramClient):
         print(f'Parsed: {chat_name}')
     except UsernameInvalidError as e:
         print(e)
+
+    client.disconnect()
 
 
 if __name__ == '__main__':
