@@ -1,15 +1,17 @@
 import json
 from telethon import TelegramClient
+from telethon.errors.rpcerrorlist import UsernameInvalidError
 
 api_id = 20343413
 api_hash = '5ac3d169381320ca0befa82dd98400b1'
 
-chat_name = 'sndkgram'
+chat_name = 'empty'
 
 
-def get_messages_by_channel_name(client: TelegramClient, name: str, limit: int):
+def get_messages_by_channel_name(client: TelegramClient, name: str, limit: int, search: str = ''):
     messages_data = []
-    messages = client.iter_messages(name, limit)
+    messages = client.iter_messages(name, limit, search=search)
+
     count = 0
 
     for message in messages:
@@ -33,10 +35,14 @@ def main():
     client = TelegramClient('session_name', api_id, api_hash)
     client.start()
 
-    data = get_messages_by_channel_name(client, chat_name, 50)
-    write_json(f'tg_{chat_name}.json', data)
+    try:
+        data = get_messages_by_channel_name(client, chat_name, limit=10, search='ютуб')
+        write_json(f'tg_{chat_name}.json', data)
+    except UsernameInvalidError as e:
+        print('Invalid username')
 
     client.disconnect()
+
 
 if __name__ == '__main__':
     main()
