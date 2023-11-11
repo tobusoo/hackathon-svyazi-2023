@@ -61,11 +61,31 @@ def isLink(link: str):
     return link.startswith("http")
     
 
-def fromLinkToId(link: str):
+def fromLinkToIdGroup(session: vk_api.VkApi, link: str):
+
     index = link.rfind("/")
     link = link[index + 1: len(link)+1]
-    return link
+
+    group = getGroupInfo(session, link)
+
+    groupId = group[0]["id"]
+
+    print(groupId)
+
+    return groupId
     
+def fromLinkToIdUser(session: vk_api.VkApi, link: str):
+
+    index = link.rfind("/")
+    link = link[index + 1: len(link)+1]
+
+    user = getUsersInfo(session, link)
+
+    userId = user[0]["id"]
+
+    print(userId)
+
+    return userId
 
 def auth_handler():
     # """ При двухфакторной аутентификации вызывается эта функция.
@@ -119,9 +139,9 @@ def main():
     # info = getUsersInfo(session, lst)
     # writeJsonList(info, "users.json")
 
-    # link = "https://vk.com/sibguti_info"
+    link = "https://vk.com/sibguti_info"
 
-    # id = fromLinkToId(link)
+    # id = fromLinkToIdGroup(link)
 
     # info = getGroupInfo(session, id)
     # writeJson(info, id + ".json")
@@ -134,8 +154,10 @@ def main():
     #     user = getUsersInfo(session, friend)
     #     print(f'{user[0]["first_name"]} {user[0]["last_name"]}')
 
-    wall = getFullWall(session, -187227252)
-    writeJson(wall, 'trrrhachatrrrhahaa.json')
+    # wall = getFullWall(session, -187227252)
+    # writeJson(wall, 'trrrhachatrrrhahaa.json')
+
+    id = fromLinkToIdUser(session, 'https://vk.com/id546543569')
     
 
 if __name__ == "__main__":
