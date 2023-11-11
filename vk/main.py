@@ -1,6 +1,7 @@
 import vk_api
 import json
 from config import *
+from vk_api.execute import VkFunction
 
 # https://oauth.vk.com/authorize?&display=page&redirect_url=https://oauth.vk.com/blank.html&scope=offline,friends,wall,status,docs,groups&response_type=token&v=5.21
 # Запрос на access token
@@ -19,6 +20,22 @@ def getUsersInfo(session: vk_api.VkApi, userIds: str): # Задание 2.2
                                         games,interests,is_favorite,is_friend,is_hidden_from_feed,last_seen,maiden_name,military,\
                                         movies,music,nickname,occupation,online,personal,photo_id,photo_max,photo_max_orig,quotes,\
                                         relation,relatives,timezone,tv,universities"})
+
+def getUsersInfoVKScript(session: vk_api.VkApi, userIds: str): # Задание 2.3
+    vk = session.get_api()
+    return vk_get_users_info(vk, {"user_ids": "freshentree9", "fields": "activities,about,blacklisted,blacklisted_by_me,books,\
+                                        bdate,can_be_invited_group,can_post,can_see_all_posts,can_see_audio,can_send_friend_request,\
+                                        can_write_private_message,career,common_count,connections,contacts,city,country,crop_photo,\
+                                        domain,education,exports,followers_count,friend_status,has_photo,has_mobile,home_town,photo_100,\
+                                        photo_200,photo_200_orig,photo_400_orig,photo_50,sex,site,schools,screen_name,status,verified,\
+                                        games,interests,is_favorite,is_friend,is_hidden_from_feed,last_seen,maiden_name,military,\
+                                        movies,music,nickname,occupation,online,personal,photo_id,photo_max,photo_max_orig,quotes,\
+                                        relation,relatives,timezone,tv,universities"})
+
+vk_get_users_info = VkFunction(args=('values',), code='''
+    return API.users.get(%(values)s);
+''')
+
 
 def getFullWall(session: vk_api.VkApi, owner_id: int): # Возвращает словарь с количеством записей и списком записей
     tools = vk_api.VkTools(session)
@@ -125,6 +142,7 @@ def main():
                            auth_handler=auth_handler,
                            captcha_handler=captcha_handler)
 
+    vk = session.get_api()
 
     # info = getGroupInfo(session, "215278139")
     # writeJson(info, "215278139.json")
@@ -134,15 +152,15 @@ def main():
     # info = getUsersInfo(session, lst)
     # writeJsonList(info, "users.json")
 
-    link = "https://vk.com/hakatonurtisi"
+    # link = "https://vk.com/hakatonurtisi"
 
-    # id = fromLinkToIdGroup(link)
+    # id = fromLinkToIdGroup(session, link)
 
     # info = getGroupInfo(session, id)
-    # writeJson(info, id + ".json")
+    # writeJson(info, str(id) + ".json")
 
     # info = getPostsInfo(session, -215278139, 0, 10)
-    # writeJson(info, id + "_wall.json")
+    # writeJson(info, str(id) + "_wall.json")
 
     # info = getFriendsInfo(session, 212184201)  # Получаем id друзей в info
     # for friend in info["items"]:               # Вывод информации о каждом друге
@@ -152,12 +170,14 @@ def main():
     # wall = getFullWall(session, -187227252)
     # writeJson(wall, 'trrrhachatrrrhahaa.json')
 
-    if (isLink(link)):
-        link = fromLinkToIdGroup(session, link)
+    # if (isLink(link)):
+    #     link = fromLinkToIdGroup(session, link)
 
-    wall = getFullWall(session, -215278139)
+    # wall = getFullWall(session, -215278139)
     
-    writeJson(wall, 'trrrhachatrrrhahaa.json')
+    # writeJson(wall, 'trrrhachatrrrhahaa.json')
+
+    print(getUsersInfoVKScript(session, 'freshentree9')[0]["first_name"])
     
 
 if __name__ == "__main__":
