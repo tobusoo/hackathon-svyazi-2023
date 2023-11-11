@@ -1,6 +1,6 @@
 import vk_api
 import json
-from config import *
+
 from vk_api.execute import VkFunction
 
 # https://oauth.vk.com/authorize?&display=page&redirect_url=https://oauth.vk.com/blank.html&scope=offline,friends,wall,status,docs,groups&response_type=token&v=5.21

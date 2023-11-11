@@ -5,8 +5,9 @@
           flex-direction: row;
           justify-content:center;
           ">
-      <PersonalInfo></PersonalInfo>
-      <PersonalInfo></PersonalInfo>
+      <VkLogin></VkLogin>
+      <TelegramLogin></TelegramLogin>
+
     </div>
   </DataEntrance>
 </template>
@@ -16,9 +17,10 @@
 import DataEntrance from "../components/DataEntrance.vue"
 
 import { defineComponent, ref } from 'vue'
-import PersonalInfo from "src/components/PersonalInfo.vue";
+import VkLogin from "../components/VkLogin.vue";
+import TelegramLogin from "../components/TelegramLogin.vue";
 export default defineComponent({
-  components: { DataEntrance, PersonalInfo },
+  components: { DataEntrance, VkLogin, TelegramLogin },
   setup() {
 
   }

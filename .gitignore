@@ -6,3 +6,5 @@ __pycache__
 session_name.session
 config.py
 venv
+.env
+node_modules
