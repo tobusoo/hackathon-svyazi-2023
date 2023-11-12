@@ -88,7 +88,7 @@ async def get_messages_by_channel_name(client: TelegramClient, name, limit: int,
         count += 1
     
     json_data = {'subscribers': channel_count, 'about': channel_about,
-                'messages_count':count, 'messages' : messages_data}
+                'messages_count':count, 'messages' : messages_data, 'profile_photo_path': f'{name}/profile.png'}
     return json_data
 
 

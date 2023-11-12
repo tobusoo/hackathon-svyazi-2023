@@ -142,7 +142,7 @@ async def tg_login():
     await client.disconnect()
     return (res.to_json())
                
-    
+
 @app.route('/api/geo/search', methods=['GET'])
 def geo_search():
     dadata = Dadata(os.environ['DADATA_SECRET'])
