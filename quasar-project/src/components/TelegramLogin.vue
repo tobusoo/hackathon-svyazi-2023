@@ -3,12 +3,14 @@
     <div class="avatar-card">
       <q-avatar size="120px" font-size="52px" color="teal" text-color="white" :icon="icon" />
       <div class="name-desc">
-        <p class="name"> {{name}} </p>
-        <p class="desc"> {{dest}} </p>
+        <p class="name"> {{ name }} </p>
+        <p class="desc"> {{ dest }} </p>
         <div style="display: flex;" class="inputButton">
-          <q-input outlined v-if="login_stage==1" v-model="text" label="Номер телефона" />
-          <q-input outlined style="width: 20vh;" v-if="login_stage==2" type="text" v-model.number="otp" label="Одноразовый ключ" />
-          <q-input outlined style="width: 40vh;" v-if="login_stage==2" type="password" v-model="tfa" label="Пароль 2FA (если нет, оставьте пустым)" />
+          <q-input outlined v-if="login_stage == 1" v-model="text" label="Номер телефона" />
+          <q-input outlined style="width: 20vh;" v-if="login_stage == 2" type="text" v-model.number="otp"
+            label="Одноразовый ключ" />
+          <q-input outlined style="width: 40vh;" v-if="login_stage == 2" type="password" v-model="tfa"
+            label="Пароль 2FA (если нет, оставьте пустым)" />
           <q-btn color="primary" icon="forward" :disabled="loggedin" :label="b_label" @click="submitAction" />
         </div>
       </div>
@@ -39,9 +41,9 @@ export default defineComponent({
     const login_stage = ref(1);
     var phone_code;
 
-    axios.get("api/telegram/signin").then(({data}) => {
+    axios.get("api/telegram/signin").then(({ data }) => {
       console.log(data)
-      if (data["_"] === "User"){
+      if (data["_"] === "User") {
         login_stage.value = 3;
         b_label.value = "Вход выполнен";
         dest.value = data["username"];
@@ -53,19 +55,21 @@ export default defineComponent({
     function submitAction() {
       b_label.value = "Подождите..."
       if (login_stage.value == 1) {
-        axios.get("api/telegram/requestcode", {params: {phone: text.value}} ).then(({data}) => {
+        axios.get("api/telegram/requestcode", { params: { phone: text.value } }).then(({ data }) => {
           console.log(data);
           phone_code = data_result;
         })
       }
       if (login_stage.value == 2) {
         axios.get("api/telegram/signin",
-          {params: {
-            code: otp.value,
-            password: tfa.value
-          }} ).then(({data}) => {
-          console.log(data);
-        })
+          {
+            params: {
+              code: otp.value,
+              password: tfa.value
+            }
+          }).then(({ data }) => {
+            console.log(data);
+          })
       }
       if (login_stage.value == 3) {
         b_label.value = "Вход выполнен";
