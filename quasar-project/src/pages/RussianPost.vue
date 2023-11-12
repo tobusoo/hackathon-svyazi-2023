@@ -101,7 +101,12 @@ export default defineComponent({
       coords_postals.value = [];
 
       show.value = 1;
-      axios.get("api/geo/search", { params: { radius: rad.value, lon: coords.value[1], lat: coords.value[0] } }).then(({ data }) => {
+      axios.get("api/geo/search", {
+        params: {
+          radius: rad.value,
+          lon: coords.value[1], lat: coords.value[0]
+        }
+      }).then(({ data }) => {
         const adrss = data['adresses'];
         const pstls = data['postals'];
         adresses_count.value = 'Найдено ' + adrss['count'] + ' Адрес(а/ов)';
@@ -175,6 +180,5 @@ export default defineComponent({
 .bottom_box {
   flex: 0 1 calc(50% - 0px);
   height: 58vh;
-}
-</style>
+}</style>
 

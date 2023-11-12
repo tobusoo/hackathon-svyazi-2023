@@ -19,7 +19,7 @@ from dadata import Dadata
 from geo.geo import *
 
 load_dotenv()
-client = TelegramClient(session='my_session', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
+client = TelegramClient(session='anon2', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
 
 if os.path.exists("./quasar-project/dist/index.html"):
     FRONTEND_URL = "/"
@@ -162,11 +162,14 @@ def geo_search():
 
 @app.route('/api/telegram/getMessages', methods=['GET'])
 async def tg_getm():
+    name = str(request.args.get('channel_name'))
+    search = str(request.args.get('search'))
+    userID = str(request.args.get('userid'))
+    print(name, search, userID)
+    # return {}
+
     global client
     await client.connect()
-    name = request.args.get('channel_name')
-    search = request.args.get('search')
-    userID = request.args.get('userid')
     limit=100
     msgs = await get_messages_by_channel_name(client=client, 
                                          search=search,
@@ -174,6 +177,7 @@ async def tg_getm():
                                          find_by_user_id=userID,
                                          limit=limit)
     await client.disconnect()
+
     return(msgs)
 
                             

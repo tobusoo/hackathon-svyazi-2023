@@ -3,7 +3,7 @@
     <div class="FormCollection">
       <div class="topform">
         <q-input class="topform__input" outlined type="text" v-model="userID" label="ID пользователя" />
-        <q-btn square color="primary" icon="search" label="Поиск пользователя" @click="search_user"/>
+        <q-btn square color="primary" icon="search" label="Поиск пользователя" @click="search_user" />
       </div>
       <div class="topform">
         <q-input class="topform__input" outlined type="text" v-model="groupID" label="ID группы" />
@@ -12,7 +12,7 @@
     </div>
   </DataEntrance>
   <DataEntrance v-if="display_mode === 'user'" style="height: 61vh" icon="man" ttitle="Информация">
-    <SocialsInfo  :avatar="avatar" :link="link" :name="name" :surname="sname" :desc="desc" :bday="bday"> </SocialsInfo>
+    <SocialsInfo :avatar="avatar" :link="link" :name="name" :surname="sname" :desc="desc" :bday="bday"> </SocialsInfo>
   </DataEntrance>
 </template>
 
@@ -39,30 +39,32 @@ export default defineComponent({
     const display_mode = ref("none");
 
     function search_user() {
-      axios.get("api/vk/getUsers", {params: {userid: userID.value}}).then(({data}) => {
-      console.log(data["response"][0])
-      data = data["response"][0]
-      display_mode.value = ("user");
-      avatar.value=data['photo_200']
-      name.value=data['first_name']
-      sname.value=data['last_name']
-      bday.value=data['bdate']
-      desc.value=data['status']
-      link.value=("https://vk.com/id" + data['id'])
-    })}
+      axios.get("api/vk/getUsers", { params: { userid: userID.value } }).then(({ data }) => {
+        console.log(data["response"][0])
+        data = data["response"][0]
+        display_mode.value = ("user");
+        avatar.value = data['photo_200']
+        name.value = data['first_name']
+        sname.value = data['last_name']
+        bday.value = data['bdate']
+        desc.value = data['status']
+        link.value = ("https://vk.com/id" + data['id'])
+      })
+    }
 
     function search_group() {
-      axios.get("api/vk/getGroups", {params: {groupid: groupID.value}}).then(({data}) => {
-      console.log(data["response"][0])
-      data = data["response"][0]
-      display_mode.value = ("user");
-      avatar.value=data['photo_200']
-      name.value=data['name']
-      sname.value=''
-      bday.value=''
-      desc.value=data['status']
-      link.value=("https://vk.com/public" + data['id'])
-    })}
+      axios.get("api/vk/getGroups", { params: { groupid: groupID.value } }).then(({ data }) => {
+        console.log(data["response"][0])
+        data = data["response"][0]
+        display_mode.value = ("user");
+        avatar.value = data['photo_200']
+        name.value = data['name']
+        sname.value = ''
+        bday.value = ''
+        desc.value = data['status']
+        link.value = ("https://vk.com/public" + data['id'])
+      })
+    }
 
 
     return {
