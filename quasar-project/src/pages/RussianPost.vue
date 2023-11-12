@@ -1,8 +1,8 @@
 <template>
   <DataEntrance style="height: 240px" icon="radar" ttitle="Координаты">
     <div class="topform">
-      <q-input class="topform__input" outlined type="number" v-model.number="coords[0]" label="Широта" />
-      <q-input class="topform__input" outlined type="number" v-model.number="coords[1]" label="Долгота" />
+      <q-input class="topform__input" outlined type="number" v-model.number="lat" label="Широта" />
+      <q-input class="topform__input" outlined type="number" v-model.number="lon" label="Долгота" />
       <q-input class="topform__input" type="number" outlined v-model.number="rad" label="Радиус (м)" />
       <q-btn square color="primary" icon="search" label="Поиск" @click="geo_search" />
     </div>
@@ -53,10 +53,9 @@
     </DataEntrance>
 
     <DataEntrance class="bottom_box" icon="map" ttitle="Карта">
-      <YandexMap :settings="settings" :zoom=zoom :coordinates=coords>
-        <YandexMarker :coordinates=coords marker-id="radMarker" :radius="rad" type="Circle"
-          :options="{ fillColor: 'ff0000', fillOpacity: 0.1, outline: false }">
-        </YandexMarker>
+      <YandexMap :settings="settings" :zoom=zoom :coordinates="[lat, lon]">
+        <YandexMarker :key="[lat, lon, rad]" type="Circle" :radius="rad" :coordinates="[lat, lon]" marker-id="radMarker"
+          :options="{ fillColor: 'ff0000', fillOpacity: 0.1, outline: false }" />
         <div v-for=" coord in coords_addresses" :key="coord">
           <YandexMarker :coordinates=coord marker-id="adresses" type="Point" :options="{ iconColor: '#ff0000' }">
           </YandexMarker>
@@ -74,13 +73,14 @@
 <script>
 import DataEntrance from "../components/DataEntrance.vue"
 import { YandexMap, YandexMarker } from 'vue-yandex-maps'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import axios from 'axios'
 
 export default defineComponent({
   components: { DataEntrance, YandexMap, YandexMarker },
   setup() {
-    const coords = ref([55.013296, 82.950971]);
+    const lat = ref(55.013296)
+    const lon = ref(82.950971);
     const rad = ref(1000);
     const adresses = ref([]);
     const adresses_count = ref('');
@@ -104,7 +104,7 @@ export default defineComponent({
       axios.get("api/geo/search", {
         params: {
           radius: rad.value,
-          lon: coords.value[1], lat: coords.value[0]
+          lon: lon.value, lat: lat.value
         }
       }).then(({ data }) => {
         const adrss = data['adresses'];
@@ -127,7 +127,8 @@ export default defineComponent({
 
     return {
       rad,
-      coords,
+      lat,
+      lon,
       adresses,
       adresses_count,
       postals,
