@@ -27,6 +27,7 @@ import DataEntrance from "../components/DataEntrance.vue"
 import SocialsInfo from "../components/SocialsInfo.vue"
 import axios from 'axios'
 import { defineComponent, devtools, ref } from 'vue'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: { DataEntrance, SocialsInfo },
@@ -44,10 +45,20 @@ export default defineComponent({
     const city = ref('')
     const member_count = ref('')
     const display_mode = ref("none");
+    const $q = useQuasar()
+
 
     function search_user() {
       city.value = '';
       country.value = '';
+      axios.get("api/vk/getMe").then(({ data }) => {
+        console.log(data.me);
+        if (!(data.me === "true")) {
+          $q.notify('Пожалуста, авторизируйтесь!');
+          return;
+        }
+      })
+
       axios.get("api/vk/getUsers", { params: { userid: userID.value } }).then(({ data }) => {
         console.log(data["response"][0])
         data = data["response"][0]
@@ -67,6 +78,14 @@ export default defineComponent({
     function search_group() {
       city.value = '';
       country.value = '';
+      axios.get("api/vk/getMe").then(({ data }) => {
+        console.log(data.me);
+        if (!(data.me === "true")) {
+          $q.notify('Пожалуста, авторизируйтесь!');
+          return;
+        }
+      })
+
       axios.get("api/vk/getGroups", { params: { groupid: groupID.value } }).then(({ data }) => {
         console.log(data["response"][0])
         data = data["response"][0]
@@ -104,9 +123,8 @@ export default defineComponent({
 
 <style>
 .FormCollection {
-  display: inline-flex;
-  flex-direction: row;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-content: center;
 }
@@ -123,6 +141,7 @@ export default defineComponent({
 .topform__input {
   background-color: white;
   border-radius: 5%;
+  min-width: 30vh;
 }
 
 .deflx {
