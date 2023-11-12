@@ -165,8 +165,8 @@ async def tg_getm():
     name = str(request.args.get('channel_name'))
     search = str(request.args.get('search'))
     userID = str(request.args.get('userid'))
-    print(name, search, userID)
-    return {}
+    # print(name, search, userID)
+    # return {}
 
     global client
     await client.connect()
