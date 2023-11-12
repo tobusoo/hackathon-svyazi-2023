@@ -7,7 +7,7 @@ from quart_cors import cors, route_cors
 import requests
 import json
 from dotenv import load_dotenv
-
+from telegram.tg import get_messages_by_channel_name
 
 from telethon import TelegramClient, errors
 import os
@@ -132,6 +132,22 @@ async def tg_login():
             res = await client.sign_in(password=password)
     await client.disconnect()
     return (res.to_json())
+
+@app.route('/api/telegram/getMessages', methods=['GET'])
+async def tg_getm():
+    global client
+    await client.connect()
+    name = request.args.get('channel_name')
+    search = request.args.get('search')
+    userID = request.args.get('userid')
+    limit=100
+    msgs = await get_messages_by_channel_name(client=client, 
+                                         search=search,
+                                         name=name,     #название канала     
+                                         find_by_user_id=userID,
+                                         limit=limit)
+    await client.disconnect()
+    return(msgs)
 
                             
     
