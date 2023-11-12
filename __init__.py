@@ -1,14 +1,23 @@
 
 from os import abort
-from flask import Flask, jsonify, redirect, request, abort
-from flask_cors import CORS
-import vk_api
+import re
+from tkinter import W
+#from flask import Flask, jsonify, redirect, request, abort
+#from flask_cors import CORS
+from quart import Quart, request, redirect, abort
+from quart_cors import cors
 import requests
-from vk.main import getUsersInfo
 import json
 from dotenv import load_dotenv
+
+
+from telethon import TelegramClient, errors
 import os
+
+import telethon
+
 load_dotenv()
+client = TelegramClient(session='anon', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
 
 if os.path.exists("./quasar-project/dist/index.html"):
     FRONTEND_URL = "/"
@@ -22,13 +31,11 @@ VK_BASE_URL = 'https://api.vk.com/method'
 DEBUG = True
 
 # instantiate the app
-app = Flask(__name__)
+app = Quart(__name__)
 # enable CORS
-CORS(app)
+app = cors(app)
 
 app.config.from_object(__name__)
-
-
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
@@ -77,7 +84,52 @@ def getuser():
         "user_ids": request.args.get("userID"),
         "v" : "5.154"
     }).text)
+
+
+@app.route('/api/telegram/requestcode', methods=['GET'])
+async def login_number():
+    global client    
+    await client.connect()
+    pcode = await client.send_code_request(str(request.args.get('phone')))
+    print(request.args.get('phone'))
+    print(pcode.phone_code_hash)
+    await client.disconnect()
+    return({"result" : pcode.phone_code_hash})
+
+@app.route('/api/telegram/signin', methods=['GET'])
+async def tg_login():
+    global client
+    if (client == None):
+            return (abort(400))
+    await client.connect()
     
+    if (await client.get_me() != None ):
+        res = await client.get_me()
+        return (res.to_json())
+    
+    code = str(request.args.get('code'))
+    password = str(request.args.get('password'))
+    if (password == ""):
+        res = await client.sign_in(code=code)
+    else:
+        try:
+            res = await client.sign_in(code=code)
+        except telethon.errors.SessionPasswordNeededError:
+            res = await client.sign_in(password=password)
+    await client.disconnect()
+    return (res.to_json())
+
+                            
+    
+   
+    
+
+## @app.route('/api/telegram/login/code', methods=['GET'])
+
+## @app.route('/api/telegram/login/2fa', methods=['GET'])
+
+## @app.route('/api/telegram/getGroup', methods=['GET'])
+
 if __name__ == '__main__':
     app_kwargs = {}
     if FRONTEND_URL == "/":

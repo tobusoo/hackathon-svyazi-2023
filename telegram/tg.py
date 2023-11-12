@@ -8,7 +8,6 @@ from telethon.errors.rpcerrorlist import UsernameInvalidError
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.channels import GetFullChannelRequest
 from qrcode.main import QRCode
-from config import *
 
 # chat_name = 1001698136879 # it's chat
 chat_name = 'sndkgram' # it's channel

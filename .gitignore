@@ -9,3 +9,4 @@ config.py
 venv
 .env
 node_modules
+anon.session
