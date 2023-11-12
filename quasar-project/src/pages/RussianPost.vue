@@ -179,6 +179,7 @@ export default defineComponent({
 
 .bottom_box {
   flex: 0 1 calc(50% - 0px);
-  height: 58vh;
-}</style>
+  height: 64vh;
+}
+</style>
 

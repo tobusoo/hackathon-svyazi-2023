@@ -166,7 +166,7 @@ async def tg_getm():
     search = str(request.args.get('search'))
     userID = str(request.args.get('userid'))
     print(name, search, userID)
-    # return {}
+    return {}
 
     global client
     await client.connect()
