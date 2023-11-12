@@ -1,14 +1,14 @@
 <template>
-  <DataEntrance style="height: 240px" icon="group" ttitle="Поиск">
+  <DataEntrance  style="height: 240px" icon="group" ttitle="Поиск">
     <div class="topform">
       <q-input class="topform__input idbox" outlined v-model.number="groupID" label="ID группы" />
       <q-input class="topform__input idbox" outlined v-model.number="userID" label="ID отправителя" />
       <q-input class="topform__input searchbox" outlined type="text" v-model="query" label="Текст" />
-      <q-btn square color="primary" icon="search" />
+      <q-btn square color="primary" @click="tgsearch" icon="search" />
     </div>
   </DataEntrance>
 
-  <div class="deflx">
+  <div class="deflx" v-if="contentavail">
     <DataEntrance class="bottom_box" icon=" man" ttitle="Информация">
       <SocialsInfo class="si"> </SocialsInfo>
     </DataEntrance>
@@ -46,13 +46,17 @@ export default defineComponent({
     const itemsId = ref([{}, {}, {}, {}, {}, {}, {}])
     const scrollTargetRef = ref(null)
 
+    function tgsearch() {
+
+    }
+    const contentavail = ref(false);
     return {
       itemsRef,
       itemsId,
       scrollTargetRef,
       userID,
       groupID,
-
+      contentavail,
       onLoadRef(index, done) {
         setTimeout(() => {
           itemsRef.value.push({}, {}, {}, {}, {}, {}, {})

@@ -34,7 +34,7 @@ export default defineComponent({
     })
 
     function openoauth(){
-      window.open("https://oauth.vk.com/authorize?client_id=51790768&display=page&redirect_uri=http://localhost:7000/api/vk/callback&response_type=code&v=5.131", '_blank').focus();
+      window.open("https://oauth.vk.com/authorize?client_id=51790768&display=page&scope=1024&redirect_uri=http://localhost:7000/api/vk/callback&response_type=code&v=5.131", '_blank').focus();
     };
     return {
       openoauth,

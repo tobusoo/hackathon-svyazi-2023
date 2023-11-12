@@ -3,7 +3,7 @@
     <div class="FormCollection">
       <div class="topform">
         <q-input class="topform__input" outlined type="number" v-model.number="userID" label="ID пользователя" />
-        <q-btn square color="primary" icon="search" label="Поиск пользователя" />
+        <q-btn square color="primary" icon="search" label="Поиск пользователя" @click="search_user"/>
       </div>
       <div class="topform">
         <q-input class="topform__input" outlined type="number" v-model.number="groupID" label="ID группы" />
@@ -20,6 +20,7 @@
 <script>
 import DataEntrance from "../components/DataEntrance.vue"
 import SocialsInfo from "../components/SocialsInfo.vue"
+import axios from 'axios'
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
@@ -27,9 +28,17 @@ export default defineComponent({
   setup() {
     const userID = ref(0);
     const groupID = ref(0);
+    var display_mode = ("none");
+    function search_user() {
+      axios.get("api/vk/getUsers", {params: {userid: userID.value}}).then(({data}) => {
+      console.log(data['response'][0])
+
+    })
+    }
     return {
       userID,
-      groupID
+      groupID,
+      search_user
     };
   }
 });
