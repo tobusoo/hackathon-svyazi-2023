@@ -7,7 +7,7 @@ from quart_cors import cors, route_cors
 import requests
 import json
 from dotenv import load_dotenv
-from telegram.tg import get_messages_by_channel_name
+from tg.tg import get_messages_by_channel_name
 
 from telethon import TelegramClient, errors
 import os
@@ -156,6 +156,9 @@ def geo_search():
     
     unique_postal_ids = find_postal_ids(response)
     postals = postals_to_json(dadata, unique_postal_ids)
+
+    return_data = {'postals': postals, 'adresses': adresses}
+    return return_data
 
 @app.route('/api/telegram/getMessages', methods=['GET'])
 async def tg_getm():
