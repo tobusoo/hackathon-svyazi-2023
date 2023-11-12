@@ -10,6 +10,12 @@
 
   <div class="deflx" v-if="contentavail">
     <DataEntrance class="bottom_box" ttitle="Сообщения">
+      <q-spinner-cube v-if="loading"
+        color="primary"
+        style="display: block;
+  margin:auto;"
+        size="5.5em"
+      />
       <div v-for="(item, index) in itemsRef" :key="index" class="caption">
         <q-card flat bordered>
           <div class="text-h5 q-mt-sm q-mb-xs" style="padding-left: 10px;">{{ item['date'] }}</div>
@@ -45,6 +51,7 @@ import axios from "axios";
 import DataEntrance from "../components/DataEntrance.vue"
 // import SocialsInfo from "../components/SocialsInfo.vue"
 import { defineComponent, ref } from 'vue'
+import { loadConfig } from "browserslist";
 
 export default defineComponent({
   components: { DataEntrance },
@@ -54,10 +61,20 @@ export default defineComponent({
     const itemsRef = ref([]);
     const search_words = ref('');
     const contentavail = ref(false);
-
+    const loading = ref(true)
     function tgsearch() {
       contentavail.value = true
+      loading.value=true
       itemsRef.value = []
+
+      axios.get("api/vk/getMe").then(({data}) => {
+        console.log(data.me);
+        if (!(data["_"] === "User")) {
+          $q.notify('Пожалуста, авторизируйтесь!');
+          return;
+        }
+      })
+
       axios.get('/api/telegram/getMessages', {
         params: {
           channel_name: groupID.value,
@@ -73,13 +90,16 @@ export default defineComponent({
         for (const elem of messages) {
           itemsRef.value.push(elem)
         }
+        loading.value=false;
       })
+
     }
 
     return {
       itemsRef,
       userID,
       groupID,
+      loading,
       search_words,
       contentavail,
       tgsearch,
