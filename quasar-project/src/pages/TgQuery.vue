@@ -10,12 +10,8 @@
 
   <div class="deflx" v-if="contentavail">
     <DataEntrance class="bottom_box" ttitle="Сообщения">
-      <q-spinner-cube v-if="loading"
-        color="primary"
-        style="display: block;
-  margin:auto;"
-        size="5.5em"
-      />
+      <q-spinner-cube v-if="loading" color="primary" style="display: block;
+                                                                margin:auto;" size="5.5em" />
       <div v-for="(item, index) in itemsRef" :key="index" class="caption">
         <q-card flat bordered>
           <div class="text-h5 q-mt-sm q-mb-xs" style="padding-left: 10px;">{{ item['date'] }}</div>
@@ -30,9 +26,8 @@
               </span>
             </div>
           </div>
-          <div v-if="item['message_url']" class="text-grey" style="padding-left: 10px;">Ссылка на пост: {{
-            item['message_url'] }}
-          </div>
+          <q-btn v-if="item['message_url']" color="primary" icon="web" target="_blank" :href="item['message_url']"
+            label="Ссылка на пост" style="margin-left: 80%; margin-top: -5%;"></q-btn>
         </q-card>
       </div>
       <template v-slot:loading>
@@ -64,10 +59,10 @@ export default defineComponent({
     const loading = ref(true)
     function tgsearch() {
       contentavail.value = true
-      loading.value=true
+      loading.value = true
       itemsRef.value = []
 
-      axios.get("api/vk/getMe").then(({data}) => {
+      axios.get("api/vk/getMe").then(({ data }) => {
         console.log(data.me);
         if (!(data["_"] === "User")) {
           $q.notify('Пожалуста, авторизируйтесь!');
@@ -90,7 +85,7 @@ export default defineComponent({
         for (const elem of messages) {
           itemsRef.value.push(elem)
         }
-        loading.value=false;
+        loading.value = false;
       })
 
     }
