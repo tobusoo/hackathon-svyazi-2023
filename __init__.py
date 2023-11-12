@@ -17,7 +17,7 @@ import os
 import telethon
 
 load_dotenv()
-client = TelegramClient(session='anon', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
+client = TelegramClient(session='anon2', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
 
 if os.path.exists("./quasar-project/dist/index.html"):
     FRONTEND_URL = "/"
@@ -37,15 +37,6 @@ app = cors(app)
 
 app.config.from_object(__name__)
 
-# sanity check route
-@app.route('/ping', methods=['GET'])
-def ping_pong():
-    return jsonify('pong!')
-
-@app.route('/api/getPort', methods=['GET'])
-def get_port():
-    return (str(port_number))
-
 @app.route('/api/vk/callback', methods=['GET'])
 def save_session_key():
     global vk_session
@@ -64,27 +55,23 @@ def save_session_key():
     # return("Key saved successfully")
     return redirect(FRONTEND_URL)
 
-
+@app.route('/api/vk/getUsers', methods=['GET'])
+def vk_get_users():
+    if (vk_session == None):
+        return abort(403)
+    userid = str(request.args.get('userid'))
+    if (not userid.isnumeric()):
+        
+    return vk_session.get('https://api.vk.com/method/users.get?v=5.131',
+                   params={'user_ids' : request.args.get('userid'),
+                           'fields' : 'bdate, photo'}).json()
+        
 @app.route('/api/vk/getMe', methods=['GET'])
 def getme():
     if (vk_session):
         return (json.dumps({"me": "true"}))
     else:
         return (json.dumps({"me": "false"}))
-
-
-@app.route('/api/vk/getUser', methods=['GET'])
-def getuser():
-    global vk_session
-    if (vk_session == None):
-        return abort(403)
-    print(vk_session)
-    return (vk_session.get(f"{VK_BASE_URL}/users.get",
-    params={
-        "user_ids": request.args.get("userID"),
-        "v" : "5.154"
-    }).text)
-
 
 @app.route('/api/telegram/requestcode', methods=['GET'])
 async def login_number():
