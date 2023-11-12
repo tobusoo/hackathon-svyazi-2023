@@ -72,7 +72,7 @@ def vk_get_users():
         userid = userid['response']['object_id']
     resp = vk_session.get('https://api.vk.com/method/users.get?v=5.131',
                    params={'user_ids' : userid,
-                           'fields' : 'bdate, photo_200, status'}).json()
+                           'fields' : 'city, country, about, followers_count, bdate, photo_200, status'}).json()
     print(resp)
     return(resp)
 

@@ -12,7 +12,11 @@
     </div>
   </DataEntrance>
   <DataEntrance v-if="display_mode === 'user'" style="height: 61vh" icon="man" ttitle="Информация">
-    <SocialsInfo :avatar="avatar" :link="link" :name="name" :surname="sname" :desc="desc" :bday="bday"> </SocialsInfo>
+    <SocialsInfo :avatar="avatar" :link="link" :name="name" :surname="sname" :desc="desc" :bday="bday"></SocialsInfo>
+    <div v-if="member_count !== ''" class="text-h6">Подписчиков: {{ member_count }}</div>
+    <div v-if="country !== ''" class="text-h6">Страна: {{ country }}</div>
+    <div v-if="city !== ''" class="text-h6">Город: {{ city }}</div>
+
   </DataEntrance>
 </template>
 
@@ -36,9 +40,14 @@ export default defineComponent({
     const desc = ref('')
     const bday = ref('')
     const link = ref('')
+    const country = ref('')
+    const city = ref('')
+    const member_count = ref('')
     const display_mode = ref("none");
 
     function search_user() {
+      city.value = '';
+      country.value = '';
       axios.get("api/vk/getUsers", { params: { userid: userID.value } }).then(({ data }) => {
         console.log(data["response"][0])
         data = data["response"][0]
@@ -48,11 +57,16 @@ export default defineComponent({
         sname.value = data['last_name']
         bday.value = data['bdate']
         desc.value = data['status']
+        country.value = data['country']['title']
+        city.value = data['city']['title']
+        member_count.value = data['followers_count']
         link.value = ("https://vk.com/id" + data['id'])
       })
     }
 
     function search_group() {
+      city.value = '';
+      country.value = '';
       axios.get("api/vk/getGroups", { params: { groupid: groupID.value } }).then(({ data }) => {
         console.log(data["response"][0])
         data = data["response"][0]
@@ -62,6 +76,7 @@ export default defineComponent({
         sname.value = ''
         bday.value = ''
         desc.value = data['status']
+        member_count.value = data['members_count']
         link.value = ("https://vk.com/public" + data['id'])
       })
     }
@@ -72,6 +87,9 @@ export default defineComponent({
       groupID,
       search_user,
       search_group,
+      member_count,
+      country,
+      city,
       avatar,
       name,
       sname,
