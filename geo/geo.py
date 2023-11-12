@@ -1,7 +1,5 @@
 import json
 from dadata import Dadata
-from config import *
-
 
 def dadata_get_addresses(dadata: Dadata, geo_lat: float, geo_lon: float, radius: int, max_count: int):
     response = dadata.geolocate(name="address", lat=geo_lat, lon=geo_lon, radius_meters=radius, count=max_count)

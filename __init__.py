@@ -14,8 +14,12 @@ import os
 
 import telethon
 
+# DADATA
+from dadata import Dadata
+from geo.geo import *
+
 load_dotenv()
-client = TelegramClient(session='anon2', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
+client = TelegramClient(session='my_session', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
 
 if os.path.exists("./quasar-project/dist/index.html"):
     FRONTEND_URL = "/"
@@ -104,7 +108,9 @@ def getme():
 async def login_number():
     global client    
     await client.connect()
+    print(str(request.args.get('phone')))
     pcode = await client.send_code_request(str(request.args.get('phone')))
+    print(pcode)
     print(request.args.get('phone'))
     print(pcode.phone_code_hash)
     await client.disconnect()
@@ -114,15 +120,19 @@ async def login_number():
 async def tg_login():
     global client
     if (client == None):
-            return (abort(400))
-    await client.connect()
+        print('Abort')
+        return (abort(400))
     
+    await client.connect()
+    print('In sign in')
     if (await client.get_me() != None ):
         res = await client.get_me()
         return (res.to_json())
-    
+    print('In sign in after')
     code = str(request.args.get('code'))
+    print(code)
     password = str(request.args.get('password'))
+    print(password)
     if (password == ""):
         res = await client.sign_in(code=code)
     else:
