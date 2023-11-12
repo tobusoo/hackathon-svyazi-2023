@@ -1,14 +1,15 @@
 
-from os import abort
+import html
+from os import abort, path
 #from flask import Flask, jsonify, redirect, request, abort
 #from flask_cors import CORS
-from quart import Quart, request, redirect, abort
+from quart import Quart, jsonify, request, redirect, abort, send_from_directory
 from quart_cors import cors, route_cors
 import requests
 import json
 from dotenv import load_dotenv
 from tg.tg import get_messages_by_channel_name
-
+import sys
 from telethon import TelegramClient, errors
 import os
 
@@ -18,11 +19,15 @@ import telethon
 from dadata import Dadata
 from geo.geo import *
 
-load_dotenv()
+extDataDir = os.getcwd()
+if getattr(sys, 'frozen', False):
+    extDataDir = sys._MEIPASS
+load_dotenv(dotenv_path=os.path.join(extDataDir, '.env'))
+
 client = TelegramClient(session='anon2', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
 
-if os.path.exists("./quasar-project/dist/index.html"):
-    FRONTEND_URL = "/"
+if os.path.exists("./quasar-project/dist/spa/index.html") or os.path.exists("./_internal/quasar-project/dist/spa/index.html") :
+    FRONTEND_URL = "http://localhost:7000"
 else:
     FRONTEND_URL = 'http://localhost:9000'
 # configuration
@@ -33,7 +38,7 @@ VK_BASE_URL = 'https://api.vk.com/method'
 DEBUG = True
 
 # instantiate the app
-app = Quart(__name__)
+app = Quart(__name__,static_folder='./quasar-project/dist/spa',static_url_path='');
 # enable CORS
 app = cors(app, allow_headers=["Authorization"])
 
@@ -51,6 +56,7 @@ def save_session_key():
                             "redirect_uri" : "http://localhost:7000/api/vk/callback",
                             "code" : code}
     ).json()
+    print(vk_auth)
     vk_session = requests.Session()
     vk_session.headers["Authorization"] = "Bearer " + vk_auth["access_token"]
     print(vk_session)
@@ -189,13 +195,15 @@ async def tg_getm():
 
 ## @app.route('/api/telegram/login/2fa', methods=['GET'])
 
-## @app.route('/api/telegram/getGroup', methods=['GET'])
+@app.route('/')
+def rr():
+    return(redirect('/index.html'))
 
 if __name__ == '__main__':
     app_kwargs = {}
     if FRONTEND_URL == "/":
         app_kwargs = dict(
             static_url_path='', 
-            static_folder='quasar-project/dist')
+            static_folder='./quasar-project/dist/spa')
     app.run(host='localhost', port=port_number, **app_kwargs)
 

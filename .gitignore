@@ -2,6 +2,9 @@
 .idea
 __pycache__
 
+dist
+build
+quasar-project/dist
 
 */__pycache__
 session_name.session
