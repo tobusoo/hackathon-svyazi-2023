@@ -1,11 +1,16 @@
-<template>
+q<template>
   <div class="q-pa-md q-gutter-sm">
     <div class="avatar-card">
-      <q-avatar size="120px" font-size="52px" color="teal" text-color="white" icon="warning" />
+      <q-avatar size="120px" font-size="52px" color="teal" text-color="white">
+        <img :src="avatar">
+      </q-avatar>
       <div class="name-desc">
-        <p class="name"> Имярек Имярек </p>
-        <p class="desc"> Описание </p>
-        <q-btn color="primary" icon="web" label="На страницу" />
+        <p class="name"> {{name}} {{ surname }} </p>
+        <p v-if="!(desc === '')" class="desc"> {{desc}} </p>
+        <p v-else> [описание пусто]</p>
+        <p v-if="!(bday === '')"> День рождения: {{ bday }} </p>
+
+        <q-btn color="primary" icon="web" target="_blank" label="На страницу" :href="link" />
       </div>
     </div>
   </div>
@@ -48,15 +53,46 @@
 import { defineComponent, ref } from 'vue'
 export default defineComponent({
   name: 'SocialsInfo',
+  props: {
+    avatar: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    surname: {
+      type: String,
+      required: true
+    },
+    desc: {
+      type: String,
+      required: true
+    },
+    bday: {
+      type: String,
+      required: true
+    },
+    link: {
+      type: String,
+      required: false
+    },
+
+
+  },
+
   setup() {
     const itemsRef = ref([{}, {}, {}, {}, {}, {}, {}])
     const itemsId = ref([{}, {}, {}, {}, {}, {}, {}])
     const scrollTargetRef = ref(null)
 
+
     return {
       itemsRef,
       itemsId,
       scrollTargetRef,
+
 
       onLoadRef(index, done) {
         setTimeout(() => {
@@ -73,6 +109,7 @@ export default defineComponent({
       }
     }
   }
+
 });
 </script>
 

@@ -47,6 +47,7 @@ export default defineComponent({
         dest.value = data["username"];
         loggedin.value = true;
         icon.value = "check"
+        d
       }
     })
 

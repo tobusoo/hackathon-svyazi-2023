@@ -2,43 +2,81 @@
   <DataEntrance style="height: 240px" icon="group" ttitle="Поиск">
     <div class="FormCollection">
       <div class="topform">
-        <q-input class="topform__input" outlined type="number" v-model.number="userID" label="ID пользователя" />
+        <q-input class="topform__input" outlined type="text" v-model="userID" label="ID пользователя" />
         <q-btn square color="primary" icon="search" label="Поиск пользователя" @click="search_user"/>
       </div>
       <div class="topform">
-        <q-input class="topform__input" outlined type="number" v-model.number="groupID" label="ID группы" />
-        <q-btn square color="primary" icon="search" label="Поиск группы" />
+        <q-input class="topform__input" outlined type="text" v-model="groupID" label="ID группы" />
+        <q-btn square color="primary" icon="search" label="Поиск группы" @click="search_group" />
       </div>
     </div>
   </DataEntrance>
-  <DataEntrance style="height: 61vh" icon="man" ttitle="Информация">
-    <SocialsInfo> </SocialsInfo>
+  <DataEntrance v-if="display_mode === 'user'" style="height: 61vh" icon="man" ttitle="Информация">
+    <SocialsInfo  :avatar="avatar" :link="link" :name="name" :surname="sname" :desc="desc" :bday="bday"> </SocialsInfo>
   </DataEntrance>
 </template>
 
 
 <script>
+
 import DataEntrance from "../components/DataEntrance.vue"
 import SocialsInfo from "../components/SocialsInfo.vue"
 import axios from 'axios'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, devtools, ref } from 'vue'
 
 export default defineComponent({
   components: { DataEntrance, SocialsInfo },
   setup() {
-    const userID = ref(0);
-    const groupID = ref(0);
-    var display_mode = ("none");
+    const userID = ref('');
+    const groupID = ref('');
+
+    const avatar = ref('')
+    const name = ref('')
+    const sname = ref('')
+    const desc = ref('')
+    const bday = ref('')
+    const link = ref('')
+    const display_mode = ref("none");
+
     function search_user() {
       axios.get("api/vk/getUsers", {params: {userid: userID.value}}).then(({data}) => {
-      console.log(data['response'][0])
+      console.log(data["response"][0])
+      data = data["response"][0]
+      display_mode.value = ("user");
+      avatar.value=data['photo_200']
+      name.value=data['first_name']
+      sname.value=data['last_name']
+      bday.value=data['bdate']
+      desc.value=data['status']
+      link.value=("https://vk.com/id" + data['id'])
+    })}
 
-    })
-    }
+    function search_group() {
+      axios.get("api/vk/getGroups", {params: {groupid: groupID.value}}).then(({data}) => {
+      console.log(data["response"][0])
+      data = data["response"][0]
+      display_mode.value = ("user");
+      avatar.value=data['photo_200']
+      name.value=data['name']
+      sname.value=''
+      bday.value=''
+      desc.value=data['status']
+      link.value=("https://vk.com/public" + data['id'])
+    })}
+
+
     return {
       userID,
       groupID,
-      search_user
+      search_user,
+      search_group,
+      avatar,
+      name,
+      sname,
+      desc,
+      bday,
+      link,
+      display_mode
     };
   }
 });
