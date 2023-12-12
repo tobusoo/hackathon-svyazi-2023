@@ -1,31 +1,12 @@
-import json
 import os
+import sys
+import json
 import getpass
-from time import sleep
-from flask import cli
+from dotenv import load_dotenv
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import UsernameInvalidError
 from telethon.errors import SessionPasswordNeededError
 from telethon.tl.functions.channels import GetFullChannelRequest
-from qrcode.main import QRCode
-
-# chat_name = 1001698136879 # it's chat
-chat_name = 'sndkgram' # it's channel
-# user = 1166414189 # find user
-user = 0 # all users
-
-qr = QRCode()
-
-
-def gen_qr(token: str):
-    qr.clear()
-    qr.add_data(token)
-    qr.print_ascii()
-
-
-def display_url_as_qr(url: str):
-    print(url)
-    gen_qr(url)
 
 
 async def get_messages_by_channel_name(client: TelegramClient, name, limit: int, search: str = '', find_by_user_id: int = 0):
@@ -63,8 +44,6 @@ async def get_messages_by_channel_name(client: TelegramClient, name, limit: int,
         if find_by_user_id and user_id != find_by_user_id:
             continue
 
-        # await client.download_media(message, f'{name}/{message.id}.png')
-
         reactions = []
         if message.reactions:
             for i in message.reactions.results:
@@ -97,35 +76,11 @@ def write_json(filename: str, data):
         json.dump(data, file, indent=4, ensure_ascii=False)
 
 
-async def log_in_by_qr_code(client: TelegramClient):
-    qr_login = await client.qr_login()
-
-    r = False
-    while not r:
-        try:
-            display_url_as_qr(qr_login.url)
-            r = await qr_login.wait(30)
-        except SessionPasswordNeededError:
-            NotTntered = False
-            while not NotTntered:
-                password = getpass.getpass(prompt='Please enter your password: ')
-                NotTntered = await client.sign_in(password=password)
-                if (NotTntered):
-                    r = True
-        except AttributeError as e:
-            r = True
-            break
-        except:
-            await qr_login.recreate()
-
-
 async def main(client: TelegramClient):
     if (not client.is_connected()):
         await client.connect()
     await client.connect()
 
-    # await log_in_by_phone(client)
-    # await log_in_by_qr_code(client)
     phone = str(input('Enter your phone number: ')) # Your number
     code = str(None)
     await client.sign_in(phone)
@@ -136,6 +91,10 @@ async def main(client: TelegramClient):
         password = getpass.getpass('Enter your password: ')
         await client.sign_in(phone, password=password)
 
+    # chat_name = 1001698136879 # it's chat
+    chat_name = 'sndkgram' # it's channel
+    # user = 1166414189 # find user
+    user = 0 # all users
 
     print('connected')
     try:
@@ -149,5 +108,13 @@ async def main(client: TelegramClient):
 
 
 if __name__ == '__main__':
-    client = TelegramClient('session_name', API_ID, API_HASH)
+    extDataDir = os.getcwd()
+    if getattr(sys, 'frozen', False):
+        extDataDir = sys._MEIPASS
+    load_dotenv(dotenv_path=os.path.join(extDataDir, '.env'))
+
+    TELEGRAM_API_ID = os.environ.get('TELEGRAM_API_ID')
+    TELEGRAM_API_HASH = os.environ.get('TELEGRAM_API_HASH')
+    print(TELEGRAM_API_ID)
+    client = TelegramClient('anon', TELEGRAM_API_ID, TELEGRAM_API_HASH)
     client.loop.run_until_complete(main(client))

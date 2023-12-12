@@ -8,7 +8,7 @@
     </div>
   </DataEntrance>
   <div class="deflx" v-if="show">
-    <DataEntrance class="bottom_box" icon="list" ttitle="Найденные адреса (Максимум 20)">
+    <DataEntrance class="bottom_box" icon="list" ttitle="Найденные адреса (до 20)">
       <!-- {{ adresses_count }} -->
       <div v-for="adress in adresses" :key="adress">
         <q-card class="my-card" flat bordered>

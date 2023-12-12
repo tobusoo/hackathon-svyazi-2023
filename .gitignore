@@ -7,15 +7,8 @@ build
 quasar-project/dist
 
 */__pycache__
-session_name.session
 config.py
 venv
-.env
 node_modules
 anon.session
-anon2.session
-sndkgram/profile.png
-my_session.session
-geekshit/profile.png
-animewebmtg/profile.png
-anon2.session-journal
+anon.session-journal

@@ -1,4 +1,7 @@
+import os
+import sys
 import json
+from dotenv import load_dotenv
 from dadata import Dadata
 
 def dadata_get_addresses(dadata: Dadata, geo_lat: float, geo_lon: float, radius: int, max_count: int):
@@ -141,20 +144,25 @@ def rad_check(rad):
     
 
 def main():
+    extDataDir = os.getcwd()
+    if getattr(sys, 'frozen', False):
+        extDataDir = sys._MEIPASS
+    load_dotenv(dotenv_path=os.path.join(extDataDir, '.env'))
+
     # lat = float(input('Enter lat:'))
     # if lat_check(lat) == False:
     #     return
-    lat = 55.601983
     # lon = float(input('Enter lon:'))
     # if lon_check(lon) == False:
     #     return
-    lon = 37.359486
     # radius = int(input('Enter radius:'))
     # if rad_check(radius) == False:
     #     return
+    lat = 55.601983
+    lon = 37.359486
     radius = 1000
     max_count = 20
-    dadata = Dadata(DADATA_TOKEN)
+    dadata = Dadata(os.environ.get('DADATA_SECRET'))
 
     response = dadata_get_addresses(dadata, lat, lon, radius, max_count)
     adresses = addresses_to_json(response)

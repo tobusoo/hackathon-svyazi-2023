@@ -1,19 +1,14 @@
-
-import html
-from os import abort, path
-#from flask import Flask, jsonify, redirect, request, abort
-#from flask_cors import CORS
-from quart import Quart, jsonify, request, redirect, abort, send_from_directory
-from quart_cors import cors, route_cors
+import os
 import requests
 import json
+import sys
+import telethon
+
+from quart import Quart, request, redirect, abort
+from quart_cors import cors
 from dotenv import load_dotenv
 from tg.tg import get_messages_by_channel_name
-import sys
-from telethon import TelegramClient, errors
-import os
-
-import telethon
+from telethon import TelegramClient
 
 # DADATA
 from dadata import Dadata
@@ -24,12 +19,13 @@ if getattr(sys, 'frozen', False):
     extDataDir = sys._MEIPASS
 load_dotenv(dotenv_path=os.path.join(extDataDir, '.env'))
 
-client = TelegramClient(session='anon2', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
+client = TelegramClient(session='anon', api_id=int(os.environ['TELEGRAM_API_ID']), api_hash=os.environ['TELEGRAM_API_HASH'])
 
 if os.path.exists("./quasar-project/dist/spa/index.html") or os.path.exists("./_internal/quasar-project/dist/spa/index.html") :
     FRONTEND_URL = "http://localhost:7000"
 else:
     FRONTEND_URL = 'http://localhost:9000'
+
 # configuration
 port_number = 7000
 vk_session = None
@@ -41,7 +37,6 @@ DEBUG = True
 app = Quart(__name__,static_folder='./quasar-project/dist/spa',static_url_path='');
 # enable CORS
 app = cors(app, allow_headers=["Authorization"])
-
 app.config.from_object(__name__)
 
 @app.route('/api/vk/callback', methods=['GET'])
@@ -63,6 +58,7 @@ def save_session_key():
     # return("Key saved successfully")
     return redirect(FRONTEND_URL)
 
+
 @app.route('/api/vk/getUsers', methods=['GET'])
 def vk_get_users():
     if (vk_session == None):
@@ -81,6 +77,7 @@ def vk_get_users():
                            'fields' : 'city, country, about, followers_count, bdate, photo_200, status'}).json()
     print(resp)
     return(resp)
+
 
 @app.route('/api/vk/getGroups', methods=['GET'])
 def vk_get_groups():
@@ -102,6 +99,7 @@ def vk_get_groups():
     print(resp)
     return(resp)
 
+
 @app.route('/api/vk/getMe', methods=['GET'])
 def getme():
     
@@ -109,6 +107,7 @@ def getme():
         return (json.dumps({"me": "true"}))
     else:
         return (json.dumps({"me": "false"}))
+
 
 @app.route('/api/telegram/requestcode', methods=['GET'])
 async def login_number():
@@ -121,6 +120,7 @@ async def login_number():
     print(pcode.phone_code_hash)
     await client.disconnect()
     return({"result" : pcode.phone_code_hash})
+
 
 @app.route('/api/telegram/signin', methods=['GET'])
 async def tg_login():
@@ -166,6 +166,7 @@ def geo_search():
     return_data = {'postals': postals, 'adresses': adresses}
     return return_data
 
+
 @app.route('/api/telegram/getMessages', methods=['GET'])
 async def tg_getm():
     name = str(request.args.get('channel_name'))
@@ -185,19 +186,12 @@ async def tg_getm():
     await client.disconnect()
 
     return(msgs)
-
                             
-    
-   
-    
-
-## @app.route('/api/telegram/login/code', methods=['GET'])
-
-## @app.route('/api/telegram/login/2fa', methods=['GET'])
 
 @app.route('/')
 def rr():
     return(redirect('/index.html'))
+
 
 if __name__ == '__main__':
     app_kwargs = {}
